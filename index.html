@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deepfake Detector - AI-Powered Detection System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #0a0e27;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Header/Navigation */
+        .navbar {
+            background: rgba(10, 14, 39, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 5%;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 8rem 5% 4rem;
+            background: radial-gradient(ellipse at top, #1a1f4d, #0a0e27);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.3), transparent);
+            border-radius: 50%;
+            top: -200px;
+            right: -200px;
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #667eea 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            color: #b8c5d6;
+            margin-bottom: 3rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Upload Section */
+        .upload-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 2px dashed rgba(102, 126, 234, 0.5);
+            border-radius: 20px;
+            padding: 4rem;
+            margin: 3rem auto;
+            max-width: 700px;
+            transition: all 0.3s ease;
+        }
+
+        .upload-container:hover {
+            border-color: #667eea;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .upload-text {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            color: #b8c5d6;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 18px 50px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid #667eea;
+            color: #667eea;
+            padding: 16px 40px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            margin-left: 1rem;
+        }
+
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        /* How to Use Section */
+.how-to-use {
+    padding: 6rem 5%;
+    background: #0f1433;
+}
+
+.how-to-use h2 {
+    text-align: center;
+    font-size: 3rem;
+    margin-bottom: 4rem;
+    color: #fff;
+}
+
+.steps-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 3rem;
+    max-width: 1400px;
+    margin: 0 auto 4rem;
+}
+
+.step {
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px solid rgba(102, 126, 234, 0.3);
+    padding: 2.5rem 2rem;
+    border-radius: 20px;
+    text-align: center;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.step:hover {
+    transform: translateY(-10px);
+    border-color: #667eea;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.step-number {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.5);
+}
+
+.step-icon {
+    font-size: 4rem;
+    margin: 1.5rem 0;
+}
+
+.step h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #667eea;
+}
+
+.step p {
+    color: #b8c5d6;
+    line-height: 1.8;
+    font-size: 1.05rem;
+}
+
+/* Tips Section */
+.tips-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem;
+    background: rgba(102, 126, 234, 0.1);
+    border-radius: 20px;
+    border: 1px solid rgba(102, 126, 234, 0.2);
+}
+
+.tips-section h3 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: #fff;
+}
+
+.tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.tip-card {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1.5rem;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.3s ease;
+}
+
+.tip-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateX(5px);
+}
+
+.tip-icon {
+    font-size: 1.5rem;
+    color: #28a745;
+    font-weight: bold;
+}
+
+.tip-card p {
+    color: #b8c5d6;
+    margin: 0;
+    font-size: 1.05rem;
+}
+
+@media (max-width: 768px) {
+    .how-to-use h2 {
+        font-size: 2rem;
+    }
+    
+    .steps-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .tips-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+        /* Features Section */
+        .features {
+            padding: 6rem 5%;
+            background: #0f1433;
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 4rem;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: #667eea;
+        }
+
+        .feature-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+
+        .feature-card p {
+            color: #b8c5d6;
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        /* Stats Section */
+        .stats {
+            padding: 6rem 5%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .stat-item h3 {
+            font-size: 4rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-item p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+        }
+
+        /* Footer */
+        .footer {
+            background: #0a0e27;
+            padding: 3rem 5%;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer p {
+            color: #b8c5d6;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.2rem;
+            }
+
+            .upload-container {
+                padding: 2rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+/* Sparkle Cursor Trail - Fixed Version */
+.sparkle {
+    position: fixed;
+    pointer-events: none;
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #667eea, 0 0 20px #764ba2;
+    animation: sparkleFloat 2s ease-out forwards;
+    z-index: 99999;
+}
+
+@keyframes sparkleFloat {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1) rotate(0deg);
+    }
+    50% {
+        opacity: 0.6;
+        transform: translate(var(--tx), var(--ty)) scale(1.2) rotate(180deg);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(calc(var(--tx) * 2), calc(var(--ty) * 2)) scale(0.1) rotate(360deg);
+    }
+}
+    </style>
+</head>
+<body>
+<!-- Navigation -->
+<nav class="navbar">
+    <div class="nav-content">
+        <div class="logo">🔍 Deepfake Detector</div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#how-to-use">How to Use</a></li>
+            <li><a href="learn-more.html">Learn More</a></li>
+            <li><a href="#" id="authLink" onclick="handleAuthClick()">Login</a></li>
+        </ul>
+    </div>
+</nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>Detect Deepfakes Before They Spread</h1>
+            <p>Advanced AI-powered detection system to identify manipulated files with 95% accuracy</p>
+            
+<div class="upload-container">
+    <div class="upload-icon">🎯</div>
+    <p class="upload-text">Upload an image to verify its authenticity</p>
+    <input type="file" id="fileInput" accept="image/,video/,audio/*,.pdf">
+    
+    <!-- ADD PROGRESS BAR HERE -->
+    <div id="uploadProgress" style="display: none; width: 100%; margin: 1.5rem 0;">
+        <p id="uploadStatus" style="margin-bottom: 0.5rem; color: #b8c5d6; font-weight: 600;">Uploading...</p>
+        <div style="background: rgba(255, 255, 255, 0.1); border-radius: 50px; overflow: hidden; height: 35px; border: 2px solid rgba(102, 126, 234, 0.3);">
+            <div id="progressBar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #667eea, #764ba2); transition: width 0.3s; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 0.95rem;">
+                0%
+            </div>
+        </div>
+    </div>
+    <!-- END PROGRESS BAR -->
+    
+    <button class="btn-primary" onclick="document.getElementById('fileInput').click()">
+        Upload Image
+    </button>
+    <button class="btn-secondary" onclick="window.location.href='learn-more.html'">
+        Learn More
+    </button>
+</div>
+        </div>
+    </section>
+
+              <!-- Features Section -->
+    <section class="features" id="features">
+        <h2>Why Choose Our Detector</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Real-Time Analysis</h3>
+                <p>Get instant results in under 2 seconds with our advanced AI algorithms</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>95% Accuracy</h3>
+                <p>Industry-leading detection accuracy trained on millions of images</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3>100% Private</h3>
+                <p>Your images are processed securely and never stored or shared</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🧠</div>
+                <h3>Deep Learning</h3>
+                <p>Powered by state-of-the-art neural networks and AI technology</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Confidence Score</h3>
+                <p>Detailed probability analysis for every detection result</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔄</div>
+                <h3>Continuous Learning</h3>
+                <p>Our AI evolves to detect the latest deepfake techniques</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How to Use Section -->
+<section class="how-to-use" id="how-to-use">
+    <h2>📖 How to Use Our Detector</h2>
+    <div class="steps-container">
+        <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-icon">📁</div>
+            <h3>Upload Your File</h3>
+            <p>Click the upload button and select an image, video, audio file, or PDF you want to analyze</p>
+        </div>
+        
+        <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-icon">⚡</div>
+            <h3>AI Analysis</h3>
+            <p>Our advanced AI instantly scans your file for deepfake indicators and manipulation signs</p>
+        </div>
+        
+        <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-icon">📊</div>
+            <h3>View Results</h3>
+            <p>Get detailed results with confidence scores, explanations, and visual indicators</p>
+        </div>
+        
+        <div class="step">
+            <div class="step-number">4</div>
+            <div class="step-icon">📥</div>
+            <h3>Download Report</h3>
+            <p>Save a professional PDF report with all analysis details for your records</p>
+        </div>
+    </div>
+    
+    <div class="tips-section">
+        <h3>💡 Tips for Best Results</h3>
+        <div class="tips-grid">
+            <div class="tip-card">
+                <span class="tip-icon">✓</span>
+                <p>Use high-quality, well-lit images</p>
+            </div>
+            <div class="tip-card">
+                <span class="tip-icon">✓</span>
+                <p>Upload clear, uncompressed files</p>
+            </div>
+            <div class="tip-card">
+                <span class="tip-icon">✓</span>
+                <p>Avoid heavily edited or filtered content</p>
+            </div>
+            <div class="tip-card">
+                <span class="tip-icon">✓</span>
+                <p>Check files from multiple sources</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <h3>95%</h3>
+                <p>Detection Accuracy</p>
+            </div>
+            <div class="stat-item">
+                <h3>2s</h3>
+                <p>Average Analysis Time</p>
+            </div>
+            <div class="stat-item">
+                <h3>100%</h3>
+                <p>Privacy Protected</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 Deepfake Detector. All rights reserved.</p>
+    </footer>
+
+    <script>
+
+
+
+        document.getElementById('fileInput').addEventListener('change', async function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    console.log('File selected:', file.name);
+    
+    // File size validation
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+        alert('❌ File too large! Maximum size is 10MB');
+        e.target.value = '';
+        return;
+    }
+    
+    // Show progress bar
+    const progressContainer = document.getElementById('uploadProgress');
+    const progressBar = document.getElementById('progressBar');
+    const uploadStatus = document.getElementById('uploadStatus');
+    progressContainer.style.display = 'block';
+    progressBar.style.width = '0%';
+    progressBar.textContent = '0%';
+    uploadStatus.textContent = 'Uploading...';
+    
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    try {
+        console.log('Sending request to Flask...');
+        
+        // Simulate progress (since Flask doesn't provide real upload progress)
+        let progress = 0;
+        const progressInterval = setInterval(() => {
+            progress += Math.random() * 15;
+            if (progress > 90) progress = 90;
+            progressBar.style.width = progress + '%';
+            progressBar.textContent = Math.round(progress) + '%';
+        }, 200);
+        
+        const response = await fetch('http://127.0.0.1:5000/api/detect', {
+            method: 'POST',
+            body: formData
+        });
+        
+        clearInterval(progressInterval);
+        progressBar.style.width = '100%';
+        progressBar.textContent = '100%';
+        uploadStatus.textContent = 'Analysis complete!';
+        
+        console.log('Response received:', response.status);
+        
+        if (!response.ok) {
+            throw new Error('HTTP error! status: ' + response.status);
+        }
+        
+        const data = await response.json();
+        console.log('Data:', data);
+        
+        localStorage.setItem('detectionResult', JSON.stringify(data));
+        
+        // Small delay to show 100% completion
+        setTimeout(() => {
+            window.location.href = 'results.html';
+        }, 500);
+        
+    } catch (error) {
+        console.error('Error:', error);
+        progressContainer.style.display = 'none';
+        alert('Connection Error! Make sure Flask is running: python app.py');
+    }
+});
+
+
+
+document.getElementById('fileInput').addEventListener('change', async function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    // Validate file type
+    const allowedTypes = [
+        'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/bmp',
+        'video/mp4', 'video/avi', 'video/mov', 'video/wmv', 'video/webm', 'video/mkv',
+        'audio/mp3', 'audio/wav', 'audio/ogg', 'audio/mpeg', 'audio/aac', 'audio/m4a',
+        'application/pdf'
+    ];
+    
+    const fileType = file.type;
+    const fileName = file.name.toLowerCase();
+    
+    // Check file extension as backup
+    const validExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', 
+                            '.mp4', '.avi', '.mov', '.wmv', '.webm', '.mkv',
+                            '.mp3', '.wav', '.ogg', '.m4a', '.aac',
+                            '.pdf'];
+    
+    const hasValidExtension = validExtensions.some(ext => fileName.endsWith(ext));
+    const hasValidType = allowedTypes.includes(fileType);
+    
+    if (!hasValidType && !hasValidExtension) {
+        alert('❌ Invalid file type! Please upload only: ✓ Images (JPG, PNG, GIF, etc.) ✓ Videos (MP4, AVI, MOV, etc.) ✓ Audio (MP3, WAV, AAC, etc.) ✓ PDF documents');
+        e.target.value = ''; // Clear the input
+        return;
+    }
+    
+    console.log('File selected:', file.name);
+    console.log('File type:', file.type);
+    console.log('File size:', (file.size / 1024 / 1024).toFixed(2) + ' MB');
+    
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    try {
+        console.log('Sending request to Flask...');
+        
+        const response = await fetch('http://127.0.0.1:5000/api/detect', {
+            method: 'POST',
+            body: formData
+        });
+        
+        console.log('Response received:', response.status);
+        
+        if (!response.ok) {
+            throw new Error('HTTP error! status: ' + response.status);
+        }
+        
+        const data = await response.json();
+        console.log('Data:', data);
+        
+        localStorage.setItem('detectionResult', JSON.stringify(data));
+        window.location.href = 'results.html';
+        
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Connection Error! Make sure Flask is running: python app.py');
+    }
+});
+    </script>
+
+   <script>
+    // Sparkle Cursor Trail Effect
+    document.addEventListener('mousemove', function(e) {
+        createSparkle(e.pageX, e.pageY);
+    });
+
+    function createSparkle(x, y) {
+        const sparkle = document.createElement('div');
+        sparkle.className = 'sparkle';
+        sparkle.style.left = x + 'px';
+        sparkle.style.top = y + 'px';
+        
+        // Random color variations (optional - makes it more colorful)
+        const colors = [
+            'radial-gradient(circle, #667eea, transparent)',
+            'radial-gradient(circle, #764ba2, transparent)',
+            'radial-gradient(circle, #fff, transparent)',
+            'radial-gradient(circle, #ffd700, transparent)',
+            'radial-gradient(circle, #ff69b4, transparent)'
+        ];
+        const randomColor = colors[Math.floor(Math.random() * colors.length)];
+        sparkle.style.background = randomColor;
+        
+        // Random size variation
+        const randomSize = Math.random() * 8 + 6; // 6-14px
+        sparkle.style.width = randomSize + 'px';
+        sparkle.style.height = randomSize + 'px';
+        
+        document.body.appendChild(sparkle);
+        
+        // Remove sparkle after 2 seconds
+        setTimeout(() => {
+            sparkle.remove();
+        }, 2000);
+    }
+
+    // Throttle sparkle creation (optional - for performance)
+    let lastSparkleTime = 0;
+    const sparkleDelay = 50; // Create sparkle every 50ms
+
+    document.addEventListener('mousemove', function(e) {
+        const now = Date.now();
+        if (now - lastSparkleTime > sparkleDelay) {
+            createSparkle(e.pageX, e.pageY);
+            lastSparkleTime = now;
+        }
+    });
+</script>
+    
+    <script>
+    // Check if user is logged in
+    function checkAuth() {
+        const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+        const authLink = document.getElementById('authLink');
+        
+        if (currentUser && currentUser.loggedIn) {
+            authLink.textContent = 'Logout (' + currentUser.name + ')';
+        } else {
+            authLink.textContent = 'Login';
+        }
+    }
+
+    function handleAuthClick() {
+        const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+        
+        if (currentUser && currentUser.loggedIn) {
+            // Logout
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('currentUser');
+                alert('Logged out successfully!');
+                location.reload();
+            }
+        } else {
+            // Redirect to login
+            window.location.href = 'login.html';
+        }
+    }
+
+    // Check auth on page load
+    checkAuth();
+
+    // Protect file upload - require login
+    document.getElementById('fileInput').addEventListener('click', function(e) {
+        const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+        
+        if (!currentUser || !currentUser.loggedIn) {
+            e.preventDefault();
+            alert('⚠ Please login first to upload files!');
+            window.location.href = 'login.html';
+        }
+    });
+</script>
+</body>
+</html>

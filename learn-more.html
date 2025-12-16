@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn More - Deepfake Detector</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            animation: fadeInUp 0.5s ease;
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+        }
+
+        h2 {
+            color: #764ba2;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+
+        h3 {
+            color: #667eea;
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+            font-size: 1.3rem;
+        }
+
+        p {
+            color: #333;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+            font-size: 1.05rem;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+            border-left: 5px solid #ffc107;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .feature-card {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        ul {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            color: #333;
+            line-height: 1.8;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn-back {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            display: block;
+            margin: 2rem auto 0;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .btn-back:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 About Deepfake Detection</h1>
+
+        <div class="info-box">
+            <p><strong>What is a Deepfake?</strong></p>
+            <p>Deepfakes are synthetic media where a person's likeness is replaced with someone else's using artificial intelligence and deep learning techniques. They can be incredibly realistic and difficult to detect with the naked eye.</p>
+        </div>
+
+        <h2>🚨 Why Deepfakes are Dangerous</h2>
+        <ul>
+            <li><strong>Misinformation:</strong> Spreading false information through fake videos</li>
+            <li><strong>Identity Theft:</strong> Impersonating individuals for fraud</li>
+            <li><strong>Political Manipulation:</strong> Creating fake political speeches</li>
+            <li><strong>Financial Scams:</strong> Deceiving people for money</li>
+            <li><strong>Reputation Damage:</strong> Harming someone's credibility</li>
+        </ul>
+
+        <h2>🧠 How Our AI Detector Works</h2>
+        <p>Our deepfake detection system uses advanced machine learning algorithms trained on thousands of real and fake images. The AI analyzes:</p>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">👁</div>
+                <h3>Facial Features</h3>
+                <p>Analyzes eye movement, blinking patterns, and facial symmetry</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎨</div>
+                <h3>Image Artifacts</h3>
+                <p>Detects inconsistencies in lighting, shadows, and textures</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔬</div>
+                <h3>Pixel Patterns</h3>
+                <p>Identifies unnatural pixel distributions created by AI</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Deep Learning</h3>
+                <p>Neural networks trained on millions of images</p>
+            </div>
+        </div>
+
+        <h2>🛡 How to Spot Deepfakes</h2>
+        <h3>Visual Clues:</h3>
+        <ul>
+            <li>Unnatural eye movements or lack of blinking</li>
+            <li>Inconsistent lighting or shadows on the face</li>
+            <li>Blurry or distorted edges around the face</li>
+            <li>Mismatched skin tones</li>
+            <li>Unusual facial proportions</li>
+        </ul>
+
+        <h3>Audio Clues:</h3>
+        <ul>
+            <li>Voice doesn't match lip movements perfectly</li>
+            <li>Robotic or unnatural speech patterns</li>
+            <li>Background noise inconsistencies</li>
+        </ul>
+
+        <div class="warning-box">
+            <p><strong>⚠ Important Note:</strong></p>
+            <p>No detection system is 100% accurate. Always verify important information from multiple trusted sources. Our AI provides a confidence score, but human judgment is still essential.</p>
+        </div>
+
+        <h2>📈 Detection Accuracy</h2>
+        <p>Our system has been trained on diverse datasets and achieves:</p>
+        <ul>
+            <li><strong>90%+</strong> accuracy on high-quality images</li>
+            <li><strong>Real-time analysis</strong> in under 2 seconds</li>
+            <li><strong>Continuous learning</strong> from new deepfake techniques</li>
+        </ul>
+
+        <h2>🔒 Privacy & Security</h2>
+        <div class="info-box">
+            <ul>
+                <li>All images are processed locally and not stored</li>
+                <li>Your data is never shared with third parties</li>
+                <li>Analysis is completely anonymous</li>
+                <li>Images are deleted immediately after analysis</li>
+            </ul>
+        </div>
+
+        <h2>💡 Best Practices</h2>
+        <ul>
+            <li>Use high-quality, well-lit images for best results</li>
+            <li>Verify suspicious content from multiple sources</li>
+            <li>Be cautious of viral content without credible sources</li>
+            <li>Report suspected deepfakes to relevant platforms</li>
+            <li>Educate others about deepfake awareness</li>
+        </ul>
+
+        <h2>🌐 Stay Informed</h2>
+        <p>Technology evolves rapidly, and so do deepfake techniques. Stay updated on the latest developments in AI-generated content and always practice critical thinking when consuming online media.</p>
+
+        <a href="index.html" class="btn-back">← Back to Home</a>
+    </div>
+</body>
+</html>

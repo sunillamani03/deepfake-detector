@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detection Results - Deepfake Detector</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
+        }
+
+        /* Animated Badge */
+        .badge-container {
+            text-align: center;
+            margin: 2rem 0;
+            position: relative;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2rem 4rem;
+            border-radius: 20px;
+            font-size: 3rem;
+            font-weight: bold;
+            position: relative;
+            animation: slideIn 0.8s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .badge.real {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            color: #155724;
+            box-shadow: 0 10px 30px rgba(21, 87, 36, 0.3);
+        }
+
+        .badge.fake {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            color: #721c24;
+            box-shadow: 0 10px 30px rgba(114, 28, 36, 0.3);
+        }
+
+        /* Pulse animation */
+        .badge::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border-radius: 25px;
+            border: 4px solid;
+            animation: pulse 2s ease-out infinite;
+            opacity: 0;
+        }
+
+        .badge.real::before {
+            border-color: #28a745;
+        }
+
+        .badge.fake::before {
+            border-color: #dc3545;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1.3);
+                opacity: 0;
+            }
+        }
+
+        /* Confidence Meter */
+        .confidence-section {
+            margin: 3rem 0;
+            padding: 2rem;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+
+        .confidence-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .confidence-value {
+            font-size: 2rem;
+            color: #667eea;
+        }
+
+        .meter-container {
+            height: 40px;
+            background: #e9ecef;
+            border-radius: 50px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .meter-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 15px;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+            width: 0%;
+            transition: width 1.5s ease-out;
+            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.5);
+        }
+
+        /* Detection Explanation */
+        .explanation-section {
+            margin: 3rem 0;
+            padding: 2rem;
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            border-radius: 10px;
+        }
+
+        .explanation-section h3 {
+            color: #856404;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .explanation-section p {
+            color: #856404;
+            line-height: 1.8;
+            margin-bottom: 0.8rem;
+        }
+
+        .explanation-section ul {
+            margin-left: 2rem;
+            color: #856404;
+        }
+
+        .explanation-section li {
+            margin: 0.5rem 0;
+        }
+
+        /* File Info */
+        .file-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .info-card {
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-value {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 3rem;
+        }
+
+        .btn {
+            padding: 15px 35px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-3px);
+        }
+
+        .btn-download {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-download:hover {
+            background: #218838;
+            transform: translateY(-3px);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .badge {
+                font-size: 2rem;
+                padding: 1.5rem 3rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        /* Sparkle Cursor Trail */
+.sparkle {
+    position: fixed;
+    pointer-events: none;
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #667eea, 0 0 20px #764ba2;
+    animation: sparkleFloat 2s ease-out forwards;
+    z-index: 99999;
+}
+
+@keyframes sparkleFloat {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1) rotate(0deg);
+    }
+    50% {
+        opacity: 0.6;
+        transform: translate(var(--tx), var(--ty)) scale(1.2) rotate(180deg);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(calc(var(--tx) * 2), calc(var(--ty) * 2)) scale(0.1) rotate(360deg);
+    }
+}
+
+    </style>
+</head>
+<body>
+    <div class="container" id="reportContent">
+        <h1>🔍 Detection Results</h1>
+
+        <!-- Animated Badge -->
+        <div class="badge-container">
+            <div class="badge" id="resultBadge">Loading...</div>
+        </div>
+
+        <!-- File Information -->
+        <div class="file-info">
+            <div class="info-card">
+                <div class="info-label">Filename</div>
+                <div class="info-value" id="filename">-</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Analysis Date</div>
+                <div class="info-value" id="analysisDate">-</div>
+            </div>
+        </div>
+
+        <!-- Confidence Meter -->
+        <div class="confidence-section">
+            <div class="confidence-label">
+                <span>Confidence Level</span>
+                <span class="confidence-value" id="confidenceText">0%</span>
+            </div>
+            <div class="meter-container">
+                <div class="meter-fill" id="meterFill">
+                    <span id="meterText">0%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detection Explanation -->
+        <div class="explanation-section" id="explanation">
+            <h3>📋 Detection Explanation</h3>
+            <p id="explanationText">Loading analysis...</p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="button-group">
+            <button class="btn btn-download" onclick="downloadPDF()">
+                📥 Download PDF Report
+            </button>
+            <button class="btn btn-primary" onclick="window.location.href='index.html'">
+                🔄 Analyze Another
+            </button>
+            <button class="btn btn-secondary" onclick="window.location.href='index.html'">
+                ← Back to Home
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Get result from localStorage
+        const resultData = localStorage.getItem('detectionResult');
+        
+        if (resultData) {
+            const result = JSON.parse(resultData);
+            console.log('Result:', result);
+            
+            // Set badge
+            const badge = document.getElementById('resultBadge');
+            badge.textContent = result.prediction;
+            badge.className = 'badge ' + (result.prediction === 'REAL' ? 'real' : 'fake');
+            
+            // Set filename
+            document.getElementById('filename').textContent = result.filename || 'Unknown';
+            
+            // Set analysis date
+            const now = new Date();
+            document.getElementById('analysisDate').textContent = now.toLocaleString();
+            
+            // Set confidence
+            document.getElementById('confidenceText').textContent = result.confidence + '%';
+            
+            // Animate meter fill
+            setTimeout(() => {
+                const meterFill = document.getElementById('meterFill');
+                const meterText = document.getElementById('meterText');
+                meterFill.style.width = result.confidence + '%';
+                meterText.textContent = result.confidence + '%';
+            }, 300);
+            
+            // Generate explanation
+            generateExplanation(result);
+            
+        } else {
+            document.getElementById('resultBadge').textContent = 'No Data';
+            document.getElementById('explanation').innerHTML = '<p>No detection data found. Please upload a file first.</p>';
+            setTimeout(() => window.location.href = 'index.html', 2000);
+        }
+
+        function generateExplanation(result) {
+            const isReal = result.prediction === 'REAL';
+            const confidence = result.confidence;
+            
+            let explanation = '';
+            
+            if (isReal) {
+                explanation = `
+                    <h3>✅ File Appears Authentic</h3>
+                    <p><strong>Our AI analysis indicates this File is likely REAL with ${confidence}% confidence.</strong></p>
+                    <p><strong>Key Indicators:</strong></p>
+                    <ul>
+                        <li>Natural facial features and proportions detected</li>
+                        <li>Consistent lighting and shadow patterns</li>
+                        <li>No obvious AI-generated artifacts found</li>
+                        <li>Pixel patterns match authentic Files characteristics</li>
+                    </ul>
+                    <p><strong>Recommendation:</strong> While our system shows high confidence, always verify important information from multiple sources.</p>
+                `;
+            } else {
+                explanation = `
+                    <h3>⚠ Potential Deepfake Detected</h3>
+                    <p><strong>Our AI analysis indicates this File may be FAKE with ${confidence}% confidence.</strong></p>
+                    <p><strong>Suspicious Indicators:</strong></p>
+                    <ul>
+                        <li>Unusual facial feature patterns detected</li>
+                        <li>Inconsistent lighting or texture artifacts</li>
+                        <li>AI-generated pixel patterns identified</li>
+                        <li>Anomalies in File compression or processing</li>
+                    </ul>
+                    <p><strong>Recommendation:</strong> Exercise caution. This image may have been manipulated using AI technology. Verify from original trusted sources before sharing.</p>
+                `;
+            }
+            
+            document.getElementById('explanation').innerHTML = explanation;
+        }
+
+function downloadPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    const result = JSON.parse(localStorage.getItem('detectionResult'));
+    const now = new Date().toLocaleString();
+    
+    // Title
+    doc.setFontSize(20);
+    doc.setTextColor(102, 126, 234);
+    doc.text('Deepfake Detection Report', 105, 20, { align: 'center' });
+    
+    // Line
+    doc.setDrawColor(102, 126, 234);
+    doc.line(20, 25, 190, 25);
+    
+    // Result
+    doc.setFontSize(16);
+    doc.setTextColor(0, 0, 0);
+    doc.text('Detection Result:', 20, 40);
+    
+    if (result.prediction === 'REAL') {
+        doc.setTextColor(21, 87, 36);
+    } else {
+        doc.setTextColor(114, 28, 36);
+    }
+    doc.setFontSize(24);
+    doc.text(result.prediction, 20, 50);
+    
+    // Details
+    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0);
+    doc.text('Confidence Level: ' + result.confidence + '%', 20, 65);
+    doc.text('Filename: ' + result.filename, 20, 75);
+    doc.text('Analysis Date: ' + now, 20, 85);
+    
+    // Explanation
+    doc.setFontSize(14);
+    doc.setTextColor(102, 126, 234);
+    doc.text('Analysis Explanation:', 20, 100);
+    
+    doc.setFontSize(11);
+    doc.setTextColor(0, 0, 0);
+    
+    if (result.prediction === 'REAL') {
+        doc.text('This File appears to be authentic based on:', 20, 110);
+        doc.text('- Natural facial features and proportions', 25, 120);
+        doc.text('- Consistent lighting and shadow patterns', 25, 128);
+        doc.text('- No AI-generated artifacts detected', 25, 136);
+        doc.text('- Normal pixel distribution patterns', 25, 144);
+    } else {
+        doc.text('This File shows signs of manipulation:', 20, 110);
+        doc.text('- Unusual facial feature patterns', 25, 120);
+        doc.text('- Inconsistent lighting or textures', 25, 128);
+        doc.text('- AI-generated artifacts present', 25, 136);
+        doc.text('- Abnormal pixel patterns detected', 25, 144);
+    }
+    
+    // Footer
+    doc.setFontSize(10);
+    doc.setTextColor(128, 128, 128);
+    doc.text('Generated by Deepfake Detector AI System', 105, 280, { align: 'center' });
+    doc.text('Copyright 2025 All Rights Reserved', 105, 285, { align: 'center' });
+    
+    // Save PDF
+    const filename = 'Deepfake_Report_' + result.filename + '_' + Date.now() + '.pdf';
+    doc.save(filename);
+}
+    </script>
+
+    <script>
+    // Sparkle Cursor Trail
+    (function() {
+        let lastTime = 0;
+        const throttleDelay = 30;
+        
+        document.addEventListener('mousemove', function(e) {
+            const now = Date.now();
+            if (now - lastTime < throttleDelay) return;
+            lastTime = now;
+            createSparkle(e.clientX, e.clientY);
+        });
+        
+        function createSparkle(x, y) {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            
+            const tx = (Math.random() - 0.5) * 30;
+            const ty = (Math.random() - 0.5) * 30;
+            sparkle.style.setProperty('--tx', tx + 'px');
+            sparkle.style.setProperty('--ty', ty + 'px');
+            
+            sparkle.style.left = x + 'px';
+            sparkle.style.top = y + 'px';
+            
+            const colors = ['#667eea', '#764ba2', '#ffffff', '#ffd700', '#ff1493', '#00ffff'];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            sparkle.style.background = randomColor;
+            sparkle.style.boxShadow = '0 0 10px ' + randomColor + ', 0 0 20px ' + randomColor;
+            
+            const size = Math.random() * 4 + 4;
+            sparkle.style.width = size + 'px';
+            sparkle.style.height = size + 'px';
+            
+            document.body.appendChild(sparkle);
+            
+            setTimeout(function() {
+                sparkle.remove();
+            }, 2000);
+        }
+    })();
+</script>
+
+</body>
+</html>
