@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn More - AI Deepfake Detector</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-brand {
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .nav-links .login-btn {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+        }
+
+        /* Header Section */
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .page-header p {
+            font-size: 20px;
+            opacity: 0.9;
+        }
+
+        /* Content Section */
+        .content-section {
+            max-width: 1200px;
+            margin: 80px auto;
+            padding: 0 20px;
+        }
+
+        .content-block {
+            margin-bottom: 80px;
+        }
+
+        .content-block h2 {
+            font-size: 36px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .content-block p {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+
+        /* Two Column Layout */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            margin: 60px 0;
+        }
+
+        .two-column img {
+            width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .two-column .text h3 {
+            font-size: 28px;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .two-column .text p {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            background: #f8f9fa;
+            padding: 80px 20px;
+        }
+
+        .how-it-works h2 {
+            text-align: center;
+            font-size: 42px;
+            margin-bottom: 60px;
+            color: #333;
+        }
+
+        .steps {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            gap: 40px;
+        }
+
+        .step {
+            display: flex;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .step-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .step-content h3 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .step-content p {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        /* Why Choose Us */
+        .why-choose {
+            max-width: 1200px;
+            margin: 80px auto;
+            padding: 0 20px;
+        }
+
+        .why-choose h2 {
+            text-align: center;
+            font-size: 42px;
+            margin-bottom: 60px;
+            color: #333;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .benefit-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.2);
+        }
+
+        .benefit-icon {
+            font-size: 50px;
+            margin-bottom: 20px;
+        }
+
+        .benefit-card h3 {
+            font-size: 22px;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .benefit-card p {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: 42px;
+            margin-bottom: 20px;
+        }
+
+        .cta-section p {
+            font-size: 20px;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        .btn {
+            padding: 18px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn-white {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .btn-white:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        /* Footer */
+        .footer {
+            background: #2d3436;
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .page-header h1 {
+                font-size: 32px;
+            }
+
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+
+            .content-block h2 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="index.html" class="nav-brand">
+            <span>🔍</span>
+            AI Deepfake Detector
+        </a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="index.html#features">Features</a>
+            <a href="learn-more.html">Learn More</a>
+            <a href="login.html" class="login-btn">Login</a>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <h1>Learn More About Deepfakes</h1>
+        <p>Understanding the technology, threats, and how we protect you</p>
+    </section>
+
+    <!-- What Are Deepfakes -->
+    <section class="content-section">
+        <div class="content-block">
+            <h2>What Are Deepfakes?</h2>
+            <p>Deepfakes are synthetic media created using artificial intelligence and machine learning techniques. They can manipulate or generate visual and audio content with a high potential to deceive viewers. The term "deepfake" comes from "deep learning" and "fake," referring to AI-generated fake content.</p>
+            <p>These AI-generated forgeries can make people appear to say or do things they never did, posing significant risks to individuals, organizations, and society at large.</p>
+        </div>
+
+        <div class="two-column">
+            <div class="text">
+                <h3>The Threat of Deepfakes</h3>
+                <p>Deepfakes pose serious threats including identity theft, financial fraud, reputation damage, and the spread of misinformation. They can be used to create fake news, manipulate elections, commit fraud, or harass individuals.</p>
+                <p>As the technology becomes more accessible, the need for reliable detection methods has never been more critical.</p>
+            </div>
+            <div>
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); height: 300px; border-radius: 15px; display: flex; align-items: center; justify-content: center; color: white; font-size: 80px;">⚠</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works">
+        <h2>How Our Detection Works</h2>
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>Upload Your Media</h3>
+                    <p>Simply upload the image, video, audio file, or document you want to analyze. Our system supports multiple file formats and processes them securely.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>AI Analysis</h3>
+                    <p>Our advanced machine learning algorithms analyze the media for signs of manipulation, including inconsistencies, artifacts, and patterns typical of AI-generated content.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>Get Detailed Results</h3>
+                    <p>Receive a comprehensive report showing whether the media is authentic or manipulated, along with a confidence score and detailed analysis of detected anomalies.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h3>Take Action</h3>
+                    <p>Use the insights to make informed decisions, protect your reputation, verify content authenticity, or report suspicious media to relevant authorities.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us -->
+    <section class="why-choose">
+        <h2>Why Choose Our Detector?</h2>
+        <div class="benefits-grid">
+            <div class="benefit-card">
+                <div class="benefit-icon">🎯</div>
+                <h3>High Accuracy</h3>
+                <p>Our AI models are trained on millions of samples, achieving over 95% accuracy in detecting deepfakes across various media types.</p>
+            </div>
+
+            <div class="benefit-card">
+                <div class="benefit-icon">⚡</div>
+                <h3>Fast Processing</h3>
+                <p>Get results in seconds with our optimized detection algorithms that don't compromise on accuracy for speed.</p>
+            </div>
+
+            <div class="benefit-card">
+                <div class="benefit-icon">🔒</div>
+                <h3>Secure & Private</h3>
+                <p>Your uploaded files are encrypted and automatically deleted after analysis. We prioritize your privacy and data security.</p>
+            </div>
+
+            <div class="benefit-card">
+                <div class="benefit-icon">🔄</div>
+                <h3>Constantly Updated</h3>
+                <p>Our models are continuously retrained with the latest deepfake techniques to stay ahead of emerging threats.</p>
+            </div>
+
+            <div class="benefit-card">
+                <div class="benefit-icon">📊</div>
+                <h3>Detailed Reports</h3>
+                <p>Receive comprehensive analysis with confidence scores, detected anomalies, and visual indicators of manipulation.</p>
+            </div>
+
+            <div class="benefit-card">
+                <div class="benefit-icon">🌐</div>
+                <h3>Multi-Format Support</h3>
+                <p>Analyze images, videos, audio files, and documents all in one platform with specialized detection for each format.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <h2>Ready to Detect Deepfakes?</h2>
+        <p>Join thousands of users protecting themselves from AI-generated misinformation</p>
+        <a href="login.html" class="btn btn-white">Get Started Now</a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 AI Deepfake Detector. All rights reserved.</p>
+        <p>Protecting truth in the digital age.</p>
+    </footer>
+</body>
+</html>

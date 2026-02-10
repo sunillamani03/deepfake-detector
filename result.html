@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Analysis Result</title>
+  <!-- html2pdf.js CDN for PDF generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card-bg: #ffffff;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --accent: #10b981;
+      --text-main: #111827;
+      --text-muted: #6b7280;
+      --border: #e5e7eb;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+      font-size: 16px;
+    }
+    .page {
+      max-width: 1100px;
+      margin: 32px auto 40px;
+      padding: 0 16px 32px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .title-block h1 { margin: 0; font-size: 31px; }
+    .title-block p { margin: 6px 0 0; color: var(--text-muted); font-size: 17px; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: #ecfdf3;
+      color: var(--accent);
+      font-size: 15px;
+      font-weight: 500;
+      border: 1px solid #bbf7d0;
+    }
+    .badge.warning {
+      background: #fef3c7;
+      color: #d97706;
+      border: 1px solid #fde68a;
+    }
+    .badge.danger {
+      background: #fee2e2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+    }
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 18px 20px 20px;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
+      border: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .card-title { font-weight: 600; font-size: 18px; }
+    .card-subtitle { font-size: 15px; color: var(--text-muted); }
+    .pill {
+      font-size: 14px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .stat {
+      padding: 12px 12px 13px;
+      border-radius: 10px;
+      background: #f9fafb;
+      border: 1px solid var(--border);
+    }
+    .stat-label { font-size: 14px; color: var(--text-muted); margin-bottom: 5px; }
+    .stat-value { font-size: 21px; font-weight: 600; margin-bottom: 3px; }
+    .stat-tag { font-size: 14px; color: var(--accent); }
+    .result-box {
+      margin-top: 8px;
+      border-radius: 10px;
+      border: 1px dashed var(--border);
+      background: #f9fafb;
+      padding: 14px;
+      min-height: 130px;
+      font-size: 16px;
+      color: var(--text-main);
+      white-space: pre-wrap;
+      overflow-y: auto;
+    }
+    .meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+      font-size: 14px;
+      color: var(--text-muted);
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .chip {
+      font-size: 14px;
+      padding: 4px 9px;
+      background: #f3f4f6;
+      border-radius: 999px;
+      border: 1px solid #e5e7eb;
+    }
+    .actions-top {
+      margin-bottom: 18px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 9px 18px;
+      font-size: 16px;
+      cursor: pointer;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s ease, transform 0.08s ease, box-shadow 0.15s ease;
+    }
+    button:active { transform: translateY(1px); box-shadow: none; }
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+    }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-ghost {
+      background: #e5e7eb;
+      color: #374151;
+    }
+    .btn-ghost:hover { background: #d1d5db; }
+    .list {
+      margin: 0;
+      padding-left: 20px;
+      font-size: 15px;
+      color: var(--text-muted);
+    }
+    .list li { margin-bottom: 4px; }
+    .footer-card {
+      text-align: center;
+      padding-top: 20px;
+      border-top: 1px dashed var(--border);
+      font-size: 15px;
+      color: var(--text-muted);
+    }
+    .footer-actions {
+      margin-top: 12px;
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .file-hint {
+      font-size: 14px;
+      margin-top: 8px;
+      color: var(--text-muted);
+    }
+    /* PDF Export Styles */
+    @media print {
+      .no-print { display: none !important; }
+      body { 
+        background: white !important; 
+        padding: 20px !important;
+        font-size: 12px;
+      }
+      .card { 
+        box-shadow: none !important; 
+        border: 1px solid #ccc !important;
+        margin-bottom: 20px !important;
+      }
+    }
+    .pdf-export-notice {
+      background: #fef3c7;
+      border: 1px solid #fde68a;
+      color: #92400e;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 14px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="title-block">
+        <h1>Analysis Result</h1>
+        <p>Summary of the uploaded media and key indicators.</p>
+      </div>
+      <span class="badge" id="badgeText">Last run just now</span>
+    </div>
+
+    <!-- PDF Export Notice -->
+    <div class="pdf-export-notice" id="pdfNotice">
+      📊 Generating PDF report... Please wait (3-5 seconds)
+    </div>
+
+    <div class="card">
+      <div class="actions-top no-print">
+        <button id="backBtn" class="btn-primary">📂 Analyze Another File</button>
+        <button id="clearBtn" class="btn-ghost">🧹 Clear Result</button>
+      </div>
+
+      <div class="card-header">
+        <div>
+          <div class="card-title">Detailed Output</div>
+          <div class="card-subtitle">Result from the last analysis.</div>
+        </div>
+        <span class="pill" id="typePill">Media type: –</span>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat">
+          <div class="stat-label">Deepfake?</div>
+          <div class="stat-value" id="isDeepfakeValue">–</div>
+          <div class="stat-tag" id="scoreTag">Awaiting run</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Confidence</div>
+          <div class="stat-value" id="confidenceValue">–</div>
+          <div class="stat-tag">Model confidence</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Risk Level</div>
+          <div class="stat-value" id="riskValue">–</div>
+          <div class="stat-tag">Detection risk</div>
+        </div>
+      </div>
+
+      <div id="resultBox" class="result-box">
+        Result will appear here after you run the analysis.
+      </div>
+
+      <div class="meta">
+        <div id="fileNameMeta">File: not selected</div>
+        <div id="extraMeta">Type: – • Method: –</div>
+      </div>
+
+      <div class="chips">
+        <div class="chip" id="chipStatus">Status: –</div>
+        <div class="chip" id="chipClientType">Content type: –</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Highlights</div>
+      </div>
+      <ul class="list" id="highlightsList">
+        <li>No analysis has been loaded yet.</li>
+        <li>Run an analysis from the upload page, then you will see details here.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Next Actions</div>
+      </div>
+      <ul class="list">
+        <li>If the file looks suspicious, treat it with caution.</li>
+        <li>Use another trusted tool or expert for confirmation.</li>
+        <li>Upload more samples to compare results.</li>
+      </ul>
+    </div>
+
+    <div class="card footer-card">
+      <div>Ready to save or continue with another file?</div>
+      <div class="footer-actions">
+        <!-- CHANGED: Text → PDF Export -->
+        <button id="downloadPdfBtn" class="btn-primary">📄 Export Result as PDF</button>
+        <button id="backBtn2" class="btn-ghost">📂 Analyze Next File</button>
+      </div>
+      <div class="file-hint">
+        Use "Analyze Next File" to return to the detector page and upload a new file.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const resultBox = document.getElementById("resultBox");
+    const isDeepfakeValue = document.getElementById("isDeepfakeValue");
+    const confidenceValue = document.getElementById("confidenceValue");
+    const riskValue = document.getElementById("riskValue");
+    const scoreTag = document.getElementById("scoreTag");
+    const fileNameMeta = document.getElementById("fileNameMeta");
+    const extraMeta = document.getElementById("extraMeta");
+    const chipStatus = document.getElementById("chipStatus");
+    const chipClientType = document.getElementById("chipClientType");
+    const typePill = document.getElementById("typePill");
+    const highlightsList = document.getElementById("highlightsList");
+    const badgeText = document.getElementById("badgeText");
+    const pdfNotice = document.getElementById("pdfNotice");
+
+    function loadAnalysis() {
+      const raw = localStorage.getItem("deepfakeResult");
+      if (!raw) {
+        resultBox.textContent =
+          "No previous analysis found. Please go back and analyze a file first.";
+        return;
+      }
+
+      const data = JSON.parse(raw);
+      console.log("Loaded analysis:", data);
+
+      // Read API fields
+      const isDeepfakeBool = data.is_deepfake || false;
+      const isDeepfakeText = isDeepfakeBool ? "Yes" : "No";
+      
+      // Convert confidence 0-1 to percentage
+      const rawScore = Number(data.confidence);
+      const confPercent = !isNaN(rawScore)
+        ? (Math.min(1, Math.max(0, rawScore)) * 100).toFixed(2) + "%"
+        : "N/A";
+
+      const riskLevel = data.risk_level || "unknown";
+      const mediaType = data.type || "unknown";
+
+      // Update UI
+      isDeepfakeValue.textContent = isDeepfakeText;
+      confidenceValue.textContent = confPercent;
+      riskValue.textContent = riskLevel.toUpperCase();
+
+      // Update badge color based on risk
+      badgeText.className = "badge";
+      if (riskLevel === "high") {
+        badgeText.classList.add("danger");
+        badgeText.textContent = "⚠ High Risk Detected";
+      } else if (riskLevel === "medium") {
+        badgeText.classList.add("warning");
+        badgeText.textContent = "⚡ Medium Risk";
+      } else {
+        badgeText.textContent = "✓ Analysis Complete";
+      }
+
+      scoreTag.textContent = isDeepfakeBool ? "Deepfake detected" : "Likely authentic";
+
+      // Build result text from available data
+      let resultText = `Analysis Type: ${mediaType.toUpperCase()}
+`;
+      resultText += `Prediction: ${isDeepfakeText} (${confPercent} confidence)
+`;
+      resultText += `Risk Level: ${riskLevel}
+
+`;
+
+      if (data.analyses) {
+        if (data.analyses.ai_model) {
+          resultText += `Model: ${data.analyses.ai_model}
+`;
+        }
+        if (data.analyses.method) {
+          resultText += `Method: ${data.analyses.method}
+`;
+        }
+        if (data.analyses.note) {
+          resultText += `
+Note: ${data.analyses.note}
+`;
+        }
+        if (data.analyses.dimensions) {
+          resultText += `
+Image dimensions: ${data.analyses.dimensions.width}×${data.analyses.dimensions.height}
+`;
+        }
+      }
+
+      resultBox.textContent = resultText;
+
+      // File metadata
+      const fileName = data.clientFileName || "Uploaded file";
+      const method = data.method || (data.analyses && data.analyses.ai_model ? "AI Model" : "Statistical");
+
+      fileNameMeta.textContent = "File: " + fileName;
+      extraMeta.textContent = "Type: " + mediaType + " • Method: " + method;
+
+      chipStatus.textContent = "Status: completed";
+      chipClientType.textContent = "Content type: " + mediaType;
+      typePill.textContent = "Media type: " + mediaType;
+
+      // Store filename globally for PDF export
+      window.analysisFileName = fileName;
+
+      // Highlights
+      highlightsList.innerHTML = "";
+      
+      const li1 = document.createElement("li");
+      li1.textContent = `Model prediction: ${isDeepfakeText} (confidence ${confPercent})`;
+      
+      const li2 = document.createElement("li");
+      li2.textContent = `File analyzed: ${fileName}`;
+      
+      const li3 = document.createElement("li");
+      if (mediaType === "image" && data.analyses && data.analyses.ai_model) {
+        li3.textContent = `Method: ${data.analyses.ai_model} (Hugging Face AI)`;
+      } else if (mediaType === "audio" || mediaType === "video" || mediaType === "pdf") {
+        li3.textContent = `${mediaType.toUpperCase()} analysis completed (limited accuracy - placeholder mode);`;
+      } else {
+        li3.textContent = `Analysis completed successfully`;
+      }
+
+      highlightsList.appendChild(li1);
+      highlightsList.appendChild(li2);
+      highlightsList.appendChild(li3);
+    }
+
+    // NEW: PDF Export Function
+    document.getElementById("downloadPdfBtn").addEventListener("click", async () => {
+      // Show loading notice
+      pdfNotice.style.display = "block";
+      
+      // Hide action buttons for clean PDF
+      const buttons = document.querySelectorAll(".no-print");
+      buttons.forEach(btn => btn.style.display = "none");
+
+      try {
+        const element = document.querySelector(".page");
+        const fileName = window.analysisFileName || "deepfake-analysis";
+        
+        const opt = {
+          margin: 0.5,
+          filename: `${fileName.replace(/[^a-z0-9]/gi, '_')}_deepfake-report.pdf`,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { 
+            scale: 2,
+            useCORS: true,
+            letterRendering: true,
+            allowTaint: true
+          },
+          jsPDF: { 
+            unit: 'in', 
+            format: 'a4', 
+            orientation: 'portrait',
+            compress: true
+          }
+        };
+
+        await html2pdf().set(opt).from(element).save();
+        
+        console.log("PDF exported successfully");
+      } catch (error) {
+        console.error("PDF export failed:", error);
+        alert("PDF export failed. Please try again or use text export as fallback.");
+      } finally {
+        // Restore buttons and hide notice
+        buttons.forEach(btn => btn.style.display = "");
+        pdfNotice.style.display = "none";
+      }
+    });
+
+    document.getElementById("clearBtn").addEventListener("click", () => {
+      localStorage.removeItem("deepfakeResult");
+      resultBox.textContent = "Result will appear here after you run the analysis.";
+      isDeepfakeValue.textContent = "–";
+      confidenceValue.textContent = "–";
+      riskValue.textContent = "–";
+      scoreTag.textContent = "Awaiting run";
+      fileNameMeta.textContent = "File: not selected";
+      extraMeta.textContent = "Type: – • Method: –";
+      chipStatus.textContent = "Status: –";
+      chipClientType.textContent = "Content type: –";
+      typePill.textContent = "Media type: –";
+      highlightsList.innerHTML = "<li>No analysis has been loaded yet.</li>";
+      badgeText.className = "badge";
+      badgeText.textContent = "No recent run";
+      window.analysisFileName = null;
+    });
+
+    function goBack() {
+      window.location.href = "detector.html";
+    }
+    document.getElementById("backBtn").addEventListener("click", goBack);
+    document.getElementById("backBtn2").addEventListener("click", goBack);
+
+    loadAnalysis();
+  </script>
+</body>
+</html>
